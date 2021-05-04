@@ -194,7 +194,6 @@ class LoginPage extends StatelessWidget {
       stream: bloc.formValidStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return ElevatedButton(
-          onPressed: snapshot.hasData ? () {} : null,
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -206,8 +205,13 @@ class LoginPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
             child: Text("Ingresar"),
           ),
+          onPressed: snapshot.hasData ? () => _login(context, bloc) : null,
         );
       },
     );
+  }
+
+  _login(BuildContext context, LoginBloc bloc) {
+    Navigator.pushReplacementNamed(context, "home");
   }
 }
