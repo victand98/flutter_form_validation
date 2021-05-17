@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
         color: Colors.red,
       ),
       onDismissed: (direction) {
-        // TODO: Delete Product
+        productProvider.deleteProduct(product.id);
       },
       child: ListTile(
         title: Text('${product.titulo} - \$${product.valor}'),
