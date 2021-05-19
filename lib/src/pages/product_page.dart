@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter_form_validation/src/models/product_model.dart';
 import 'package:flutter_form_validation/src/providers/products_provider.dart';
@@ -19,6 +21,8 @@ class _ProductPageState extends State<ProductPage> {
 
   bool _saving = false;
 
+  File photo;
+
   @override
   Widget build(BuildContext context) {
     final ProductModel productData = ModalRoute.of(context).settings.arguments;
@@ -34,11 +38,11 @@ class _ProductPageState extends State<ProductPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.photo_size_select_actual),
-            onPressed: () {},
+            onPressed: _selectPhoto,
           ),
           IconButton(
             icon: Icon(Icons.camera_alt),
-            onPressed: () {},
+            onPressed: _takePhoto,
           ),
         ],
       ),
@@ -49,6 +53,7 @@ class _ProductPageState extends State<ProductPage> {
             key: formKey,
             child: Column(
               children: [
+                _showPhoto(),
                 _createName(),
                 _createPrice(),
                 _createAvailable(),
@@ -135,5 +140,44 @@ class _ProductPageState extends State<ProductPage> {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Widget _showPhoto() {
+    print("_photo?.path ${photo?.path}");
+    if (product.fotoUrl != null)
+      return Container();
+    else {
+      return photo == null
+          ? Image(
+              image: AssetImage("assets/no-image.png"),
+              height: 300.0,
+              fit: BoxFit.cover,
+            )
+          : Image.file(
+              photo,
+              height: 300.0,
+              fit: BoxFit.cover,
+            );
+    }
+  }
+
+  _selectPhoto() async {
+    _processImage(ImageSource.gallery);
+  }
+
+  _takePhoto() async {
+    _processImage(ImageSource.camera);
+  }
+
+  _processImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().getImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        photo = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 }
